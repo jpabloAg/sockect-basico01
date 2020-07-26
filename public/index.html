@@ -11,6 +11,41 @@
 <body>
     <h1>Programa de Colas</h1>
 
+    <!-- importamos la libreria de socket.io -->
+    <script src="socket.io/socket.io.js"></script>
+    <script>
+        // aca definiremos las funciones que queremos que se disparen cuando 
+        //recibamos informacion del servidor o cuando nosotros queramos enviar informacion al servidor
+        // io() es una funcion que aparece gracias a la libreria que importamos
+        var socket = io();
+
+        // conectar el frontend con el backend usando evento connect
+        socket.on('connect', function(){
+            console.log('Conectado al servidor');
+        });
+
+        //el callback se eejcutara cuando se de el evento disconnect, que es cuando
+        //se pierde la conexion con el servidor
+        socket.on('disconnect', function(){
+            console.log('Perdimos la conexión con el servidor');
+        });
+
+        //enviar información al servidor (backend), para esto usaremos la palabra emit
+        socket.emit('enviarMensaje', {
+            usuario: 'pablo',
+            mensaje: 'Hello world'
+        }, function(responseServer){
+            console.log('Mensaje emitido satisfactoriamente');
+            console.log(responseServer);
+        });
+
+        //recibir la informacion que me manda el servidor
+        socket.on('enviarMensaje', (mensajeServidor) => {
+            console.log(mensajeServidor);
+            console.log('Servidor dice: ',mensajeServidor.mensaje);
+        })
+
+    </script>
 </body>
 
 </html>
