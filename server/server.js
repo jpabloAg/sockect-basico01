@@ -14,35 +14,14 @@ const port = process.env.PORT || 3000;
 
 app.use(express.static(publicPath));
 
-//inicializar socket.ion, esta es la comunicación del backend
-let io = socketIO(server);
+//---------inicializar socket.io, esta es la comunicación del backend-----------
+//exportamos el objeto io para usarlo en el archivo correspondiente 
+//al uso de los sockest (socket.js)
+module.exports.io = socketIO(server);
 
-// conectar el backend con el frontend, apartir del evento connection
-io.on('connection', (client) => {
-    console.log('usuario conectado');
+//cargamos el archivo que trabaja con los sockets, para usarlo en el archivo server.js
+require('./sockets/socket');
 
-    //saber cuando un cliente se desconecta, apartir del evento disconnect
-    client.on('disconnect', () => {
-        console.log('usario desconectado');
-    });
-
-    //escuchar un mensaje del cliente
-    client.on('enviarMensaje', (mensajeCliente, callback) => {
-        console.log(mensajeCliente);
-        console.log('Cliente dice: ',mensajeCliente.mensaje);
-
-        callback({
-            ok:true,
-            mensaje: 'Mensaje recibido'
-        });
-    });
-
-    //emitir un mensaje al cliente una vez este se conecte lo recibira
-    client.emit('enviarMensaje', {
-        usuario: 'Admin',
-        mensaje: 'Bienvenido a esta aplicación'
-    });
-})
 
 server.listen(port, (err) => {
 
